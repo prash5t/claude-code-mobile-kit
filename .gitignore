@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+
+# Editor / IDE
+.vscode/
+.idea/
+.cursor/
+.qodo/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+venv/
+.venv/
+
+# Built artifacts (if you experiment with a Flutter project inside the kit)
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+
+# Secret files that should never be committed
+.env
+.env.local
+*.keystore
+*-service-account.json
+key.properties

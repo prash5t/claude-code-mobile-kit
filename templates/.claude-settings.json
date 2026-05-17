@@ -1,0 +1,35 @@
+{
+  "_comment": "Merge this into your project's .claude/settings.json (or settings.local.json). Adjust file paths to match your layout.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": {
+          "tool": "Edit|Write",
+          "file_path_glob": "lib/**/*.dart"
+        },
+        "command": ".claude/hooks/sync-analytics.sh"
+      },
+      {
+        "matcher": {
+          "tool": "Edit|Write",
+          "file_path_glob": "pubspec.yaml"
+        },
+        "command": ".claude/hooks/sync-release-history.sh"
+      },
+      {
+        "matcher": {
+          "tool": "Edit|Write",
+          "file_path_glob": "android/app/src/main/AndroidManifest.xml"
+        },
+        "command": ".claude/hooks/flag-policy-impact.sh"
+      },
+      {
+        "matcher": {
+          "tool": "Edit|Write",
+          "file_path_glob": "pubspec.yaml"
+        },
+        "command": ".claude/hooks/flag-policy-impact.sh"
+      }
+    ]
+  }
+}
