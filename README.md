@@ -166,7 +166,7 @@ The patterns here are extracted from a personal workflow used to semi-automate a
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+Public domain (Unlicense). Do whatever. See [LICENSE](LICENSE).
 
 ## Author
 
