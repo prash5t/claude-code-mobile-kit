@@ -1,80 +1,97 @@
 # claude-code-mobile-kit
 
-A reference kit for shipping Flutter mobile apps to the Google Play Store using a multi-agent Claude Code workflow. It codifies a pattern that takes an indie app from idea → spec → implementation → compliance → asset generation → deployment → maintenance, with most of the heavy lifting handled by role-specific subagents, automated hooks, and slash commands.
+A working setup for shipping Flutter apps to the Google Play Store with a multi-agent Claude Code workflow. Takes an indie app from idea → spec → implementation → compliance → asset generation → deployment → maintenance, with most of the lifecycle work delegated to role-specific subagents, automated hooks, and slash commands.
 
-This isn't a framework like Django. It's a **playbook + reference templates + working patterns** you can fork into your own setup.
+You clone it, run `bootstrap.sh` against your Flutter project, fill in `CLAUDE.md`, and start using slash commands.
+
+---
+
+## Five-minute start
+
+```bash
+git clone https://github.com/prash5t/claude-code-mobile-kit.git
+cd claude-code-mobile-kit
+./scripts/check-prereqs.sh
+./scripts/bootstrap.sh /path/to/your-flutter-app
+cd /path/to/your-flutter-app
+$EDITOR CLAUDE.md          # fill in your app details
+claude                      # launches Claude Code
+```
+
+Then in the Claude Code session:
+
+```
+/policy-sync               # safe first slash command — regenerates docs/policy/
+```
+
+Full quickstart with options: [QUICKSTART.md](QUICKSTART.md).
 
 ---
 
 ## Who this is for
 
-Indie Flutter developers who:
+Flutter indie developers who:
 - Already use Claude Code (or are about to)
 - Ship — or want to ship — apps to Google Play
-- Want the boring lifecycle stuff (compliance pages, image assets, version bumps, Play Console submissions, analytics event sync) handled by agents instead of by hand
-- Are comfortable with the command line, with `gh` / `git`, and with reading + adapting Markdown templates
+- Want the boring lifecycle stuff (compliance pages, image assets, version bumps, Play Console submissions, analytics catalog sync) handled by agents instead of by hand
+- Are comfortable with the command line, with `git`, and with reading and adapting Markdown templates
 
-**Not for:** non-coders, web devs who don't ship native, anyone looking for a polished GUI tool, or anyone expecting a no-config experience.
+Not for: non-coders, web devs who don't ship native apps, anyone looking for a polished GUI tool, or anyone expecting a no-config experience.
 
 ---
 
-## What you get
+## See it before you adopt it
+
+The [example/](example/) directory shows what a populated workspace looks like after a few weeks of using the kit. The fictional app, "DailyStreak," demonstrates:
+
+- A filled-in [CLAUDE.md](example/CLAUDE.md)
+- An architect-generated [feature spec](example/docs/spec/daily-streak-widget.md)
+- An accumulated [learnings.md](example/docs/learnings.md) with rules subagents will honor on the next run
+- An auto-synced [analytics events catalog](example/docs/analytics-events.md)
+- A [generated privacy policy](example/docs/policy/privacy-policy.md)
+- A [release history](example/docs/release-history.md)
+- A [store listing](example/docs/store-listing.md)
+
+Reading the example is the fastest way to grok what the kit produces.
+
+---
+
+## What's in the repo
 
 ```
 claude-code-mobile-kit/
-├── README.md              ← you are here
-├── METHODOLOGY.md         ← the philosophy: why agents, when this pattern works (and when it doesn't)
+├── README.md                  ← you are here
+├── QUICKSTART.md              ← 5-min path from clone to first slash command
+├── METHODOLOGY.md             ← philosophy and trade-offs
+├── scripts/
+│   ├── check-prereqs.sh       ← verify Flutter / Claude Code / git / python3 are installed
+│   └── bootstrap.sh           ← one-command setup into a target Flutter project
 ├── docs/
 │   ├── 01-overview.md         ← workflow phases + diagrams
-│   ├── 02-setup.md            ← prerequisites + first run
-│   ├── 03-subagents.md        ← the subagent roles and when each fires
-│   ├── 04-hooks.md            ← PostToolUse hooks and what they're for
-│   ├── 05-slash-commands.md   ← custom slash commands that wrap multi-step flows
-│   ├── 06-deploying.md        ← Play Console API automation patterns
-│   ├── 07-maintenance.md      ← post-launch ops (analytics, policy regen, version bumps)
-│   └── 08-self-improving.md   ← the auto-improvement loop (learnings file + hook patterns)
-└── templates/
-    ├── CLAUDE.md          ← root CLAUDE.md template for a new Flutter app
-    ├── agents/            ← subagent definitions (architect, compliance-checker, etc.)
-    ├── hooks/             ← PostToolUse hook scripts
-    ├── slash-commands/    ← custom slash command definitions
-    └── scripts/           ← Play Console / analytics / keystore helpers
+│   ├── 02-setup.md            ← detailed setup walkthrough
+│   ├── 03-subagents.md        ← the subagent roles
+│   ├── 04-hooks.md            ← PostToolUse hooks
+│   ├── 05-slash-commands.md   ← slash commands that wrap multi-step flows
+│   ├── 06-deploying.md        ← Play Console API integration
+│   ├── 07-maintenance.md      ← post-launch ops
+│   └── 08-self-improving.md   ← the auto-improvement loop
+├── templates/                 ← copied into your project by bootstrap.sh
+│   ├── CLAUDE.md              ← root template for a new Flutter app
+│   ├── agents/                ← 7 subagent definitions
+│   ├── hooks/                 ← 4 PostToolUse hook scripts
+│   ├── slash-commands/        ← 9 slash command definitions
+│   ├── scripts/               ← Python helpers for Play Console API
+│   └── .claude-settings.json  ← hook registration config
+└── example/                   ← populated reference workspace (read-only browse)
+    ├── CLAUDE.md
+    └── docs/
+        ├── spec/
+        ├── policy/
+        ├── learnings.md
+        ├── analytics-events.md
+        ├── release-history.md
+        └── store-listing.md
 ```
-
-The methodology and the diagrams are the conceptual contribution. The templates are the copy-paste starter that saves you 10-20 hours of trial and error.
-
----
-
-## Quick start
-
-1. **Prerequisites** (see [docs/02-setup.md](docs/02-setup.md) for details):
-   - Flutter SDK installed and `flutter doctor` happy
-   - Claude Code installed and authenticated
-   - A Google Play Developer account ($25 one-time fee, paid directly to Google)
-   - `gh` and `git` set up
-   - A Flutter project (existing or fresh)
-
-2. **Clone the kit:**
-
-   ```bash
-   git clone https://github.com/prash5t/claude-code-mobile-kit.git
-   cd claude-code-mobile-kit
-   ```
-
-3. **Copy templates into your Flutter project:**
-
-   ```bash
-   cp templates/CLAUDE.md /path/to/your-flutter-app/CLAUDE.md
-   cp -r templates/agents /path/to/your-flutter-app/.claude/
-   cp -r templates/hooks /path/to/your-flutter-app/.claude/
-   cp -r templates/slash-commands /path/to/your-flutter-app/.claude/
-   ```
-
-4. **Edit `CLAUDE.md`** to fill in your app's specifics (name, package ID, monetization model, etc.).
-
-5. **Open the project in Claude Code** and try the first slash command, e.g. `/scaffold-feature` or `/policy-sync`.
-
-Full setup walkthrough in [docs/02-setup.md](docs/02-setup.md).
 
 ---
 
@@ -102,31 +119,47 @@ Full diagram set in [docs/01-overview.md](docs/01-overview.md).
 
 ---
 
-## What makes this different
+## Slash commands you'll use
 
-Most agentic-dev content out there is general-purpose web/backend automation. This kit is **specifically for mobile, specifically for Flutter, specifically for solo or small-team indie shipping**. The constraints make the patterns sharper:
+- `/new-feature <brief>` — refine an idea into a spec
+- `/implement <spec-name>` — build from an approved spec
+- `/compliance-check` — Play Store policy audit
+- `/configure <integration>` — wire firebase, admob, mixpanel, etc.
+- `/refresh-assets` — regenerate icon, feature graphic, screenshots
+- `/publish <bump> <track>` — bump version, build AAB, upload to Play
+- `/promote <from>-to-<to>` — move releases between tracks
+- `/check-health` — post-launch audit
+- `/policy-sync` — regenerate privacy policy and terms
+
+Full reference: [docs/05-slash-commands.md](docs/05-slash-commands.md).
+
+---
+
+## What makes this different from a generic agentic-dev setup
+
+Most agentic-dev content out there is general-purpose web/backend automation. This kit is for mobile, Flutter, solo or small-team indie shipping. The constraints make the patterns sharper:
 
 - Mobile apps have a hard "ship to store" gate (Play Console review). The compliance-checker subagent is built for that gate.
 - Indie shippers don't have a designer or a release engineer. The asset-generator and deployer subagents fill those roles.
-- A single dev can't be in every code path. The PostToolUse hooks keep the analytics catalog, policy pages, and version metadata coherent without manual checks.
-- Self-improvement matters because no one's writing tickets for you. The kit includes a learnings-file pattern so the workflow accumulates context across sessions.
+- A single developer can't be in every code path. The PostToolUse hooks keep the analytics catalog, policy pages, and version metadata coherent without manual checks.
+- Self-improvement matters because no one's writing tickets for you. The kit includes a learnings-file pattern so the workflow accumulates context across sessions. See [docs/08-self-improving.md](docs/08-self-improving.md).
 
 ---
 
 ## Maintenance posture
 
-**This is a reference repo, not an actively maintained framework.** Fork freely, use as-is, or submit improvements. I'll review PRs when I have time but make no guarantees on response. If you build something useful on top of this, please open an issue with a link — I'd love to see it.
+This is a reference repo, not an actively maintained framework. Fork freely, use as-is, or submit improvements. PRs are reviewed when there's time; no SLA. If you build something useful on top of this, please open an issue with a link — I'd like to see it.
 
-The patterns here are extracted from a personal workflow I use to semi-automate a collection of indie Flutter apps I ship in my spare time. The workflow takes minimal manual input and handles idea refinement, implementation, compliance, image generation, Play Store deployment, and ongoing maintenance — with most of the work delegated to subagents and hooks. This kit is what's reusable from that setup, sanitized and templated for general use.
+The patterns here are extracted from a personal workflow used to semi-automate a collection of indie Flutter apps shipped in free time. The workflow takes minimal manual input and handles idea refinement, implementation, compliance, image generation, Play Store deployment, and ongoing maintenance — with most of the work delegated to subagents and hooks. This kit is what's reusable from that setup, sanitized and templated for general use.
 
 ---
 
 ## Honest caveats
 
-- **Claude Code dependent.** The whole kit assumes you're using Claude Code as your agent runtime. Other tools (Cursor, Aider, Continue) have similar concepts but the templates won't drop in without adaptation.
-- **Anthropic API costs apply.** Running agents costs tokens. Budget accordingly. A typical indie app shipping cycle through this workflow runs USD 5-30 in Claude usage depending on scope and how often you re-run things.
-- **Play Console rules change.** The compliance-checker subagent encodes patterns that work as of the kit's last update. Play Store policy moves. Always read the actual current policy.
-- **Not a no-code tool.** You will need to read code, edit YAML / Markdown, run CLI commands. If you've never opened a terminal, this isn't your starting point.
+- **Claude Code dependent.** The whole kit assumes Claude Code as the agent runtime. Other tools (Cursor, Aider, Continue) have similar concepts, but the templates won't drop in without adaptation.
+- **Anthropic API costs apply.** Running agents costs tokens. Budget accordingly. A typical indie app shipping cycle through this workflow runs USD 5-30 in Claude usage depending on scope.
+- **Play Console rules change.** The compliance-checker encodes patterns that work as of the kit's last update. Play Store policy moves. Always read the current policy.
+- **Not a no-code tool.** You will read code, edit YAML and Markdown, run CLI commands.
 - **No guarantees about Google Play acceptance.** Following the kit's compliance patterns reduces friction but doesn't eliminate rejection. The Play Console team has final say.
 
 ---

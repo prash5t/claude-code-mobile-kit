@@ -2,6 +2,8 @@
 
 The thinking behind this kit. Read this before adopting the templates — the templates make a lot more sense once you understand the principles.
 
+For the hands-on path, see [QUICKSTART.md](QUICKSTART.md). For the file structure of the kit, see [README.md](README.md).
+
 ---
 
 ## The premise
@@ -78,10 +80,9 @@ These run silently. They keep the human-facing state coherent without needing th
 
 ## What this kit deliberately is NOT
 
-- **An installable framework.** No `pip install`, no `flutter pub global activate`. Templates are copy-paste because that's honest — you'll customize half of them anyway.
-- **A scaffolder CLI.** I considered it. Decided against. A `kit init` command would hide the structure that you actually need to understand to debug your own setup.
 - **A general agentic dev framework.** This is mobile-and-Play-Store specific. The patterns generalize but the templates don't. Don't try to use this for web SaaS — you'll fight the templates.
-- **Anthropic-neutral.** Claude Code is the assumed runtime. You can adapt the patterns to other agent runtimes (Aider, Cursor, Continue) but it'll be real work. The kit doesn't pretend otherwise.
+- **A scaffolder CLI that hides structure.** `bootstrap.sh` copies templates into your project so you can see and modify them. There's no abstraction layer hiding the file structure you'll eventually need to debug.
+- **Anthropic-neutral.** Claude Code is the assumed runtime. You can adapt the patterns to other agent runtimes (Aider, Cursor, Continue) but it's real work. The kit doesn't pretend otherwise.
 
 ---
 
